@@ -1,0 +1,12 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
