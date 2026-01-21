@@ -10,6 +10,6 @@ services:
       - FALABELLA_ENDPOINT=${FALABELLA_ENDPOINT}
       - FALABELLA_USER_ID=${FALABELLA_USER_ID}
       - FALABELLA_API_KEY=${FALABELLA_API_KEY}
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     restart: unless-stopped
