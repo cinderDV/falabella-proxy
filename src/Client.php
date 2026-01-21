@@ -155,4 +155,42 @@ class Client {
 
         throw new \Exception("Order not found with OrderNumber: $orderNumber", 404);
     }
+
+    public function getOrderItems($orderId) {
+        $client = RocketClient::create($this->config);
+
+        $request = Endpoints::order()->getOrderItems($orderId);
+        $response = $this->handleResponse($client->call($request));
+
+        $items = [];
+        foreach ($response->getItems()->toArray() as $item) {
+            $items[] = [
+                'OrderItemId' => $item->getOrderItemId(),
+                'OrderId' => $item->getOrderId(),
+                'Name' => $item->getName(),
+                'Sku' => $item->getSku(),
+                'ShopSku' => $item->getShopSku(),
+                'ShippingType' => $item->getShippingType(),
+                'ItemPrice' => $item->getItemPrice(),
+                'PaidPrice' => $item->getPaidPrice(),
+                'WalletCredits' => $item->getWalletCredits(),
+                'TaxAmount' => $item->getTaxAmount(),
+                'ShippingAmount' => $item->getShippingAmount(),
+                'VoucherAmount' => $item->getVoucherAmount(),
+                'VoucherCode' => $item->getVoucherCode(),
+                'Status' => $item->getStatus(),
+                'ShipmentProvider' => $item->getShipmentProvider(),
+                'TrackingCode' => $item->getTrackingCode(),
+                'Reason' => $item->getReason(),
+                'ReasonDetail' => $item->getReasonDetail(),
+                'PromisedShippingTimes' => $item->getPromisedShippingTimes() ? $item->getPromisedShippingTimes()->format('Y-m-d\TH:i:sP') : null,
+                'ShippingProviderType' => $item->getShippingProviderType(),
+                'ExtraAttributes' => $item->getExtraAttributes(),
+                'CreatedAt' => $item->getCreatedAt() ? $item->getCreatedAt()->format('Y-m-d\TH:i:sP') : null,
+                'UpdatedAt' => $item->getUpdatedAt() ? $item->getUpdatedAt()->format('Y-m-d\TH:i:sP') : null,
+            ];
+        }
+
+        return $items;
+    }
 }
