@@ -70,4 +70,21 @@ $app->get('/orders/{id}', function (Request $request, Response $response, array 
     }
 });
 
+// Obtener items/productos de una orden: GET /orders/{id}/items
+$app->get('/orders/{id}/items', function (Request $request, Response $response, array $args) use ($falabella) {
+    try {
+        $data = $falabella->getOrderItems($args['id']);
+
+        $response->getBody()->write(json_encode($data));
+        return $response->withHeader('Content-Type', 'application/json');
+    } catch (\Exception $e) {
+        $httpCode = ($e->getCode() >= 400 && $e->getCode() < 600) ? $e->getCode() : 500;
+        $error = ['error' => $e->getMessage(), 'code' => $e->getCode()];
+        $response->getBody()->write(json_encode($error));
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($httpCode);
+    }
+});
+
 $app->run();
