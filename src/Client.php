@@ -28,6 +28,65 @@ class Client {
         return $response;
     }
 
+    private function serializeOrder($order) {
+        $addressBilling = $order->getAddressBilling();
+        $addressShipping = $order->getAddressShipping();
+
+        return [
+            'OrderId' => $order->getOrderId(),
+            'OrderNumber' => $order->getOrderNumber(),
+            'CustomerFirstName' => $order->getCustomerFirstName(),
+            'CustomerLastName' => $order->getCustomerLastName(),
+            'PaymentMethod' => $order->getPaymentMethod(),
+            'Remarks' => $order->getRemarks(),
+            'DeliveryInfo' => $order->getDeliveryInfo(),
+            'Price' => $order->getPrice(),
+            'GiftMessage' => $order->getGiftMessage(),
+            'VoucherCode' => $order->getVoucherCode(),
+            'NationalRegistrationNumber' => $order->getNationalRegistrationNumber(),
+            'ItemsCount' => $order->getItemsCount(),
+            'PromisedShippingTime' => $order->getPromisedShippingTime() ? $order->getPromisedShippingTime()->format('Y-m-d\TH:i:sP') : null,
+            'ExtraAttributes' => $order->getExtraAttributes(),
+            'CreatedAt' => $order->getCreatedAt()->format('Y-m-d\TH:i:sP'),
+            'UpdatedAt' => $order->getUpdatedAt()->format('Y-m-d\TH:i:sP'),
+            'AddressBilling' => $addressBilling ? [
+                'FirstName' => $addressBilling->getFirstName(),
+                'LastName' => $addressBilling->getLastName(),
+                'Phone' => $addressBilling->getPhone(),
+                'Phone2' => $addressBilling->getPhone2(),
+                'Address1' => $addressBilling->getAddress1(),
+                'Address2' => $addressBilling->getAddress2(),
+                'Address3' => $addressBilling->getAddress3(),
+                'Address4' => $addressBilling->getAddress4(),
+                'Address5' => $addressBilling->getAddress5(),
+                'City' => $addressBilling->getCity(),
+                'Ward' => $addressBilling->getWard(),
+                'Region' => $addressBilling->getRegion(),
+                'PostCode' => $addressBilling->getPostCode(),
+                'Country' => $addressBilling->getCountry(),
+            ] : null,
+            'AddressShipping' => $addressShipping ? [
+                'FirstName' => $addressShipping->getFirstName(),
+                'LastName' => $addressShipping->getLastName(),
+                'Phone' => $addressShipping->getPhone(),
+                'Phone2' => $addressShipping->getPhone2(),
+                'Address1' => $addressShipping->getAddress1(),
+                'Address2' => $addressShipping->getAddress2(),
+                'Address3' => $addressShipping->getAddress3(),
+                'Address4' => $addressShipping->getAddress4(),
+                'Address5' => $addressShipping->getAddress5(),
+                'City' => $addressShipping->getCity(),
+                'Ward' => $addressShipping->getWard(),
+                'Region' => $addressShipping->getRegion(),
+                'PostCode' => $addressShipping->getPostCode(),
+                'Country' => $addressShipping->getCountry(),
+            ] : null,
+            'Statuses' => array_map(function($status) {
+                return $status->getStatus();
+            }, $order->getStatuses()->toArray()),
+        ];
+    }
+
     public function getOrders($params) {
         $client = RocketClient::create($this->config);
 
@@ -63,16 +122,7 @@ class Client {
         // Convertir a array serializable
         $orders = [];
         foreach ($response->getOrders()->toArray() as $order) {
-            $orders[] = [
-                'OrderId' => $order->getOrderId(),
-                'OrderNumber' => $order->getOrderNumber(),
-                'CustomerFirstName' => $order->getCustomerFirstName(),
-                'CustomerLastName' => $order->getCustomerLastName(),
-                'PaymentMethod' => $order->getPaymentMethod(),
-                'Price' => $order->getPrice(),
-                'CreatedAt' => $order->getCreatedAt()->format('Y-m-d\TH:i:sP'),
-                'UpdatedAt' => $order->getUpdatedAt()->format('Y-m-d\TH:i:sP'),
-            ];
+            $orders[] = $this->serializeOrder($order);
         }
 
         return $orders;
@@ -85,17 +135,7 @@ class Client {
         $response = $this->handleResponse($client->call($request));
         $order = $response->getOrder();
 
-        // Convertir a array serializable
-        return [
-            'OrderId' => $order->getOrderId(),
-            'OrderNumber' => $order->getOrderNumber(),
-            'CustomerFirstName' => $order->getCustomerFirstName(),
-            'CustomerLastName' => $order->getCustomerLastName(),
-            'PaymentMethod' => $order->getPaymentMethod(),
-            'Price' => $order->getPrice(),
-            'CreatedAt' => $order->getCreatedAt()->format('Y-m-d\TH:i:sP'),
-            'UpdatedAt' => $order->getUpdatedAt()->format('Y-m-d\TH:i:sP'),
-        ];
+        return $this->serializeOrder($order);
     }
 
     public function getOrderByNumber($orderNumber) {
@@ -111,17 +151,7 @@ class Client {
         // Buscar en la colección
         foreach ($response->getOrders()->toArray() as $order) {
             if ($order->getOrderNumber() == $orderNumber) {
-                // Retornar como array para JSON
-                return [
-                    'OrderId' => $order->getOrderId(),
-                    'OrderNumber' => $order->getOrderNumber(),
-                    'CustomerFirstName' => $order->getCustomerFirstName(),
-                    'CustomerLastName' => $order->getCustomerLastName(),
-                    'PaymentMethod' => $order->getPaymentMethod(),
-                    'Price' => $order->getPrice(),
-                    'CreatedAt' => $order->getCreatedAt()->format('Y-m-d\TH:i:sP'),
-                    'UpdatedAt' => $order->getUpdatedAt()->format('Y-m-d\TH:i:sP'),
-                ];
+                return $this->serializeOrder($order);
             }
         }
 
