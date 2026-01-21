@@ -24,6 +24,11 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Declarar variables de entorno para que Coolify las detecte
+ENV FALABELLA_ENDPOINT=""
+ENV FALABELLA_USER_ID=""
+ENV FALABELLA_API_KEY=""
+
 EXPOSE 80
 
 CMD ["apache2-foreground"]
