@@ -1,0 +1,17 @@
+{
+    "_hash": "73e32f552940237fb1051faddae466f79914e7e62c4db082b2cc72e342461db7",
+    "patches": {
+        "rocket-labs/sellercenter-sdk-php": [
+            {
+                "package": "rocket-labs/sellercenter-sdk-php",
+                "description": "0",
+                "url": "patches/rocket-labs-php83-filter-constants.patch",
+                "sha256": "49e3ca61a1caf249810fbcee1dcd7346e48a85a3abc1c1f566b73ca3d79698c8",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}
