@@ -17,6 +17,10 @@ RUN composer install --no-dev --optimize-autoloader
 
 COPY . .
 
+# Fix SDK bug: remove non-existent PHP constants
+RUN sed -i 's/filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED | FILTER_FLAG_SCHEME_REQUIRED)/filter_var($url, FILTER_VALIDATE_URL)/' \
+    /var/www/html/vendor/rocket-labs/sellercenter-sdk-php/src/RocketLabs/SellerCenterSdk/Core/Configuration.php
+
 RUN composer dump-autoload --optimize
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
