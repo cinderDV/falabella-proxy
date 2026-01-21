@@ -81,9 +81,7 @@ class Client {
                 'PostCode' => $addressShipping->getPostCode(),
                 'Country' => $addressShipping->getCountry(),
             ] : null,
-            'Statuses' => array_map(function($status) {
-                return $status->getStatus();
-            }, $order->getStatuses()->toArray()),
+            'Statuses' => $order->getStatuses() ? $order->getStatuses()->toArray() : [],
         ];
     }
 
