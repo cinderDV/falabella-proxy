@@ -87,4 +87,15 @@ $app->get('/orders/{id}/items', function (Request $request, Response $response, 
     }
 });
 
+// Health check para Coolify: GET /health
+$app->get('/health', function (Request $request, Response $response) {
+    $health = [
+        'status' => 'ok',
+        'service' => 'falabella-proxy',
+        'timestamp' => date('c')
+    ];
+    $response->getBody()->write(json_encode($health));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 $app->run();
